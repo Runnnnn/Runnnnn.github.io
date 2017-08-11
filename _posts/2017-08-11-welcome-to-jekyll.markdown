@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Welcome to Jekyll!"
+title:  "李振超很没用"
 date:   2017-08-11 16:28:52 +0800
 categories: jekyll update
 ---
