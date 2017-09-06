@@ -1,0 +1,41 @@
+---
+layout: post
+title:  "关于antd的按需加载"
+date:   2017-09-06 16:28:52 +0800
+categories: antd
+---
+今天我们这边的一个实习小姑娘用我随手搭的一个react环境配置，准备搞搞ant design。但是弄了半天发现antd的组件还是没法按需加载。
+于是下午抽空就看了看问题究竟是出在哪里。
+按理说按照 `babel-plugin-import` 的文档配置就应该没问题了。如果是 `less/sass` 就设置 `style: true` , 如果是 `css` 文件就设置 `style: 'css'` 。
+
+但是设置完了，发现不起任何作用。样式根本没有加载。
+后来发现问题出在我的webpack的配置上。
+
+这是我的一段webpack配置。
+{% highlight ruby %}
+module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [{
+                    loader: 'style-loader'
+                }, {
+                    loader: 'css-loader',
+                    options: {
+                        modules: true,
+                        localIdentName: '[path][name]__[local]--[hash:base64:5]'
+                    }
+                }],
+            }, {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: ['file-loader'],
+            }, {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel-loader',
+            },
+        ],
+    }
+{% endhighlight %}
+我设置了css module, 需要加一个 `exclude: [path.resolve(__dirname, "node_module")]` 就可以解决问题了。
+
